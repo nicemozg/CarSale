@@ -1,0 +1,9 @@
+@model Brand
+
+<div class="form-group mb-3">
+    <label for="brand" class="mb-2">Брэнд</label>
+    <input asp-for="BrandName" type="text" class="form-control" id="brand" placeholder="Введите название брэнда">
+    <div class="text-center">
+        <span asp-validation-for="BrandName" class="text-danger"></span>
+    </div>
+</div>
