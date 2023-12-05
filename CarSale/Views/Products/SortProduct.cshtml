@@ -1,0 +1,71 @@
+@model IEnumerable<Product>
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+
+
+<h1>Список товаров</h1>
+
+<table class="table">
+
+    <tr>
+        <th>
+            <a asp-action="SortProduct" asp-route-state="@ViewBag.NameSort">
+                Наименование
+            </a>
+        </th>
+        
+        <th>
+            <a asp-action="SortProduct" asp-route-state="@ViewBag.BrandSortSort">
+                Брэнд
+            </a>
+        </th>
+
+        <th>
+            <a asp-action="SortProduct"asp-route-state="@ViewBag.CreationSort">
+                Дата создания
+            </a>
+        </th>
+
+        <th>
+            <a asp-action="SortProduct"asp-route-state="@ViewBag.CategorySort">
+                Категория
+            </a>
+        </th>
+
+        <th>
+            <a asp-action="SortProduct"asp-route-state="@ViewBag.PriceSort">
+                Цена
+            </a>
+        </th>
+        
+        <th>
+            <a>
+                Подробно
+            </a>
+        </th>
+
+        <th>
+            <a>
+                Удаление
+            </a>
+        </th>
+
+    </tr>
+
+    @foreach (Product p in Model)
+
+    {
+        <tr><td>@p.Name</td>
+            <td>@p.Brand.BrandName</td>
+            <td>@p.Creation</td>
+            <td>@p.Category.CategoryName</td>
+            <td>@((p.Price).ToString("C0").Replace(",", " "))</td>
+            <td><a asp-action="Details" asp-route-id="@p.Id" class="btn btn-primary btn-sm">Детально</a></td>
+            <td><a asp-action="Delete" asp-route-id="@p.Id" class="btn btn-danger btn-sm">Удалить</a></td></tr>
+    }
+
+</table>

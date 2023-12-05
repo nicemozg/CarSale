@@ -1,0 +1,43 @@
+@model Product
+
+@{
+    ViewBag.Title = "Редактировать данные";
+    Layout = "_Layout";
+}
+
+<div class="container text-center">
+    <h2>Заполните форму для редактирования</h2>
+
+    @if (ViewBag.ErrorExist != null)
+    {
+        <h4 class="text-danger text-center">@ViewBag.ErrorExist</h4>
+    }
+
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <form asp-action="Edit" method="post" enctype="multipart/form-data">
+
+                <input asp-for="ProductId" type="hidden"/>
+                <input asp-for="Creation" type="hidden"/>
+
+                @await Html.PartialAsync("PartialView/ProductPartialForm", Model)
+                
+                <div class="text-center">
+                    <button type="submit" class="btn btn-outline-info mt-3">Сохранить</button>
+                </div>
+            </form>
+
+            @section Scripts
+
+            {
+
+                @{
+                    await Html.RenderPartialAsync("_ValidationScriptsPartial");
+
+                }
+
+            }
+
+        </div>
+    </div>
+</div>

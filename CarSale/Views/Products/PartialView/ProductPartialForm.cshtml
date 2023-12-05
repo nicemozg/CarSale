@@ -1,0 +1,40 @@
+@model Product
+
+
+<div class="form-group mb-3">
+    
+    <select asp-for="BrandId" asp-items="@ViewBag.Brands">
+        <option>Выберите брэнд</option>
+    </select>
+    
+    <select asp-for="CategoryId" asp-items="@ViewBag.Categories">
+        <option>Выберите категорию</option>
+    </select>
+    
+    
+    <input asp-for="BrandId" type="hidden" />
+    <div class="text-center">
+        <span asp-validation-for="BrandId" class="text-danger"></span>
+    </div>
+    
+    <input asp-for="CategoryId" type="hidden" />
+    <div class="text-center">
+        <span asp-validation-for="CategoryId" class="text-danger"></span>
+    </div>
+    
+     
+    <label for="brand" class="mb-2">Название товара</label>
+    <input asp-for="Name" type="text" class="form-control" id="productName" placeholder="Введите название товра">
+    <span asp-validation-for="Name" class="text-danger"></span>
+
+    <label for="brand" class="mb-2">Описание товара</label>
+    <textarea asp-for="Description" class="form-control" id="description" placeholder="Введите описание товара"></textarea>
+
+    <label for="brand" class="mb-2">Цена товара</label>
+    <input asp-for="Price" type="text" class="form-control" id="price" placeholder="Введите цену товра">
+    <span asp-validation-for="Price" class="text-danger"></span>
+
+     <label for="AvatarFile" class="mb-2">Загрузить изображение</label>
+    <input asp-for="AvatarFile" type="file" class="form-control-file" id="AvatarFile">
+</div>
+

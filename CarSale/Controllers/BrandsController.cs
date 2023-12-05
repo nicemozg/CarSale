@@ -9,8 +9,13 @@ public class BrandsController : Controller
 {
     private Car_Sale_Context _db;
     private readonly UserManager<User> _userManager;
-    private readonly IWebHostEnvironment _hostingEnvironment;
-    
+
+    public BrandsController(Car_Sale_Context db, UserManager<User> userManager)
+    {
+        _db = db;
+        _userManager = userManager;
+    }
+
     // GET
     [HttpGet]
     public IActionResult Index()
