@@ -25,7 +25,6 @@ namespace CarSale.Migrations
 
                     b.Property<string>("BrandName")
                         .IsRequired()
-                        .HasMaxLength(20)
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -49,6 +48,55 @@ namespace CarSale.Migrations
                     b.ToTable("Categories");
                 });
 
+            modelBuilder.Entity("CarSale.Models.ColorAuto", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ColorName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ColorsAutos");
+                });
+
+            modelBuilder.Entity("CarSale.Models.ModelAuto", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ModelName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ModelAutos");
+                });
+
+            modelBuilder.Entity("CarSale.Models.Photos", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("PhotoPath")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("ProductId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("Photos");
+                });
+
             modelBuilder.Entity("CarSale.Models.Product", b =>
                 {
                     b.Property<int>("Id")
@@ -64,24 +112,46 @@ namespace CarSale.Migrations
                     b.Property<int>("CategoryId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("ColorAutoId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<DateTime>("Creation")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Description")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("InfoFileName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("ModelAutoId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("Price")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("SteeringWheel")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<decimal>("Price")
+                    b.Property<string>("Transmission")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid>("ProductId")
-                        .HasColumnType("TEXT");
+                    b.Property<int>("TypeAutoId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("TypeMotorId")
+                        .HasColumnType("INTEGER");
 
                     b.Property<DateTime?>("Update")
                         .HasColumnType("TEXT");
+
+                    b.Property<string>("Volume")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Years")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
@@ -89,7 +159,45 @@ namespace CarSale.Migrations
 
                     b.HasIndex("CategoryId");
 
+                    b.HasIndex("ColorAutoId");
+
+                    b.HasIndex("ModelAutoId");
+
+                    b.HasIndex("TypeAutoId");
+
+                    b.HasIndex("TypeMotorId");
+
                     b.ToTable("Products");
+                });
+
+            modelBuilder.Entity("CarSale.Models.TypeAuto", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("TypeName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TypeAutos");
+                });
+
+            modelBuilder.Entity("CarSale.Models.TypeMotor", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("TypeName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TypeAutosMototors");
                 });
 
             modelBuilder.Entity("CarSale.Models.User", b =>
@@ -284,6 +392,15 @@ namespace CarSale.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("CarSale.Models.Photos", b =>
+                {
+                    b.HasOne("CarSale.Models.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId");
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("CarSale.Models.Product", b =>
                 {
                     b.HasOne("CarSale.Models.Brand", "Brand")
@@ -298,9 +415,41 @@ namespace CarSale.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("CarSale.Models.ColorAuto", "ColorAuto")
+                        .WithMany()
+                        .HasForeignKey("ColorAutoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CarSale.Models.ModelAuto", "ModelAuto")
+                        .WithMany()
+                        .HasForeignKey("ModelAutoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CarSale.Models.TypeAuto", "TypeAuto")
+                        .WithMany()
+                        .HasForeignKey("TypeAutoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CarSale.Models.TypeMotor", "TypeMotor")
+                        .WithMany()
+                        .HasForeignKey("TypeMotorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Brand");
 
                     b.Navigation("Category");
+
+                    b.Navigation("ColorAuto");
+
+                    b.Navigation("ModelAuto");
+
+                    b.Navigation("TypeAuto");
+
+                    b.Navigation("TypeMotor");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

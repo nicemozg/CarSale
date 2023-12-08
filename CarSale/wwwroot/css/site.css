@@ -20,3 +20,19 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.login-input{
+  width: 200px;
+}
+
+.login-password{
+  width: 161px;
+}
+
+.login-eye{
+  width: 39px;
+}
+
+.search{
+  width: 200px;
+}

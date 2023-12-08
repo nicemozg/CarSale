@@ -1,16 +1,29 @@
 @model Product
 
-
 <div class="form-group mb-3">
-    
     <select asp-for="BrandId" asp-items="@ViewBag.Brands">
         <option>Выберите брэнд</option>
+    </select>
+    
+    <select asp-for="ModelAutoId" asp-items="@ViewBag.Models">
+        <option>Выберите модель</option>
     </select>
     
     <select asp-for="CategoryId" asp-items="@ViewBag.Categories">
         <option>Выберите категорию</option>
     </select>
     
+    <select asp-for="TypeAutoId" asp-items="@ViewBag.TypesAuto">
+        <option>Выберите тип кузова</option>
+    </select>
+    
+    <select asp-for="TypeMotorId" asp-items="@ViewBag.TypesMotor">
+        <option>Выберите тип двигателя</option>
+    </select>
+    
+    <select asp-for="ColorAutoId" asp-items="@ViewBag.Colors">
+        <option>Выберите цвет</option>
+    </select>
     
     <input asp-for="BrandId" type="hidden" />
     <div class="text-center">
@@ -22,19 +35,55 @@
         <span asp-validation-for="CategoryId" class="text-danger"></span>
     </div>
     
-     
-    <label for="brand" class="mb-2">Название товара</label>
-    <input asp-for="Name" type="text" class="form-control" id="productName" placeholder="Введите название товра">
-    <span asp-validation-for="Name" class="text-danger"></span>
-
-    <label for="brand" class="mb-2">Описание товара</label>
-    <textarea asp-for="Description" class="form-control" id="description" placeholder="Введите описание товара"></textarea>
-
-    <label for="brand" class="mb-2">Цена товара</label>
-    <input asp-for="Price" type="text" class="form-control" id="price" placeholder="Введите цену товра">
+    <label for="description" class="mb-2">Описание товара</label>
+    <textarea asp-for="Description" class="form-control" id="description" placeholder="Введите описание авто"></textarea>
+    
+   <div class="d-flex">
+       <select asp-for="SteeringWheel" class="form-control ml-2">
+           <option value="left">Слева</option>
+           <option value="right">Справа</option>
+       </select>
+   </div>
+    <span asp-validation-for="SteeringWheel" class="text-danger"></span>
+    
+     <div class="d-flex">
+           <select asp-for="Transmission" class="form-control ml-2">
+               <option value="auto">АКПП</option>
+               <option value="robot">Робот</option>
+               <option value="mechanical">МКПП</option>
+               
+           </select>
+       </div>
+    <span asp-validation-for="Transmission" class="text-danger"></span>
+    
+    @* <div class="d-flex"> *@
+    @*     <select asp-for="Motor" class="form-control ml-2"> *@
+    @*         <option value="fuel">Бензин</option> *@
+    @*         <option value="electro">Электро</option> *@
+    @*         <option value="hybrid">Гибрид</option> *@
+    @*     </select> *@
+    @* </div> *@
+    @* <span asp-validation-for="Transmission" class="text-danger"></span> *@
+    
+    <label for="volume" class="mb-2">Объем</label>
+            <input asp-for="Volume" type="text" class="form-control" id="volume" placeholder="Введите объем авто">
+    <span asp-validation-for="Volume" class="text-danger"></span>
+    
+    <label for="years" class="mb-2">Год выпуска</label>
+        <input asp-for="Years" type="text" class="form-control" id="years" placeholder="Введите год авто">
+    <span asp-validation-for="Years" class="text-danger"></span>
+    
+    <label for="price" class="mb-2">Цена товара</label>
+    <input asp-for="Price" type="text" class="form-control" id="price" placeholder="Введите цену авто">
     <span asp-validation-for="Price" class="text-danger"></span>
 
-     <label for="AvatarFile" class="mb-2">Загрузить изображение</label>
-    <input asp-for="AvatarFile" type="file" class="form-control-file" id="AvatarFile">
+    <label for="AvatarFile" class="mb-2">Основное изображение</label>
+        <input asp-for="AvatarFile" type="file" class="form-control-file" id="AvatarFile">
+    
+    <label for="PhotoFiles" class="mb-2">Загрузить изображения</label>
+   <input asp-for="PhotoFiles" type="file" class="form-control-file" id="PhotoFiles" multiple>
+    <span asp-validation-for="PhotoFiles" class="text-danger"></span>
+    
+    <label for="InfoFile" class="mb-2">Фото инфо</label>
+            <input asp-for="InfoFile" type="file" class="form-control-file" id="InfoFile">
 </div>
-

@@ -1,8 +1,9 @@
 @model List<Product>
 
 @{
-    ViewBag.Title = "Список товаров";
+    ViewBag.Title = "Список автомобилей";
     Layout = "_Layout";
+    var isAdminOrSuperAdmin = User.IsInRole("superAdmin");
 }
 
 <div class="container">
@@ -11,15 +12,30 @@
             <div class="text-center">
                 <h2>@ViewBag.Title</h2>
             </div>
+            @{
+                if (isAdminOrSuperAdmin)
+                {
+                    <a asp-action="Add" class="my-3 btn btn-outline-info">Добавить товар</a>
+                }
+            }
             
-            <a asp-action="Add" class="my-3 btn btn-outline-info">Добавить товар</a>
-            
-            <form asp-controller="Products" asp-action="Index" method="post" class="form-inline justify-content-center">
+            <form asp-controller="Products" asp-action="Index" method="post" class="text-center">
                 
-                <div class="form-group mr-2">
-                    <label for="brand" class="mr-2">Бренд:</label>
+                <div class="form-group mr-2 search mx-auto mt-1">
+                    @* <label for="category" class="mr-2">Категория:</label> *@
+                    <select id="category" name="category" class="form-control">
+                        <option value="">Категории</option>
+                        @foreach (var category in ViewBag.Categories)
+                        {
+                            <option value="@category.Id">@category.CategoryName</option>
+                        }
+                    </select>
+                </div>
+                
+                <div class="form-group mr-2 search mx-auto mt-1">
+                    @* <label for="brand" class="mr-2">Марка:</label> *@
                     <select id="brand" name="brand" class="form-control">
-                        <option value="">Все бренды</option>
+                        <option value="">Марки</option>
                         @foreach (var brand in ViewBag.Brands)
                         {
                             <option value="@brand.Id">@brand.BrandName</option>
@@ -27,16 +43,30 @@
                     </select>
                 </div>
                 
-                <div class="form-group mr-2">
-                    <label for="category" class="mr-2">Категория:</label>
-                    <select id="category" name="category" class="form-control">
-                        <option value="">Все категории</option>
-                        @foreach (var category in ViewBag.Categories)
+                @* <div class="form-group mr-2 search mx-auto mt-1"> *@
+                @*     $1$ <label for="model" class="mr-2">Модель:</label> #1# *@
+                @*     <select id="model" name="model" class="form-control"> *@
+                @*         <option value="">Модели</option> *@
+                @*         @foreach (var carModel in ViewBag.Models) *@
+                @*         { *@
+                @*             <option value="@carModel.Id">@carModel.ModelName</option> *@
+                @*         } *@
+                @*     </select> *@
+                @* </div> *@
+                
+                <div class="form-group mr-2 search mx-auto mt-1">
+                    @* <label for="motor" class="mr-2">Двигатель:</label> *@
+                    <select id="motor" name="motor" class="form-control">
+                        <option value="">Тип двигателя</option>
+                        @foreach (var carMotor in ViewBag.Motors)
                         {
-                            <option value="@category.Id">@category.CategoryName</option>
+                            <option value="@carMotor.Id">@carMotor.TypeName</option>
                         }
                     </select>
                 </div>
+                
+                
+                
                 <div class="form-group">
                     <button type="submit" class="btn btn-primary m-3">Применить фильтр</button>
                 </div>
@@ -57,21 +87,27 @@
             {
                 <div class="col-md-4">
                     <div class="card mb-4">
-                        <img src="/uploads/@product.AvatarFileName" class="card-img-top img-fluid" alt="Изображение товара">
+                        <a asp-action="Details" asp-route-id="@product.Id">
+                            <img src="/uploads/@product.AvatarFileName" class="card-img-top img-fluid" alt="Изображение товара">
+                        </a>
                         <div class="card-body text-center">
-                            <h6 class="card-title">@product.Brand.BrandName</h6>
-                            <h5 class="card-title">@product.Name</h5>
+                            <a asp-action="Details" asp-route-id="@product.Id">
+                                <h5 class="card-title">@product.Brand.BrandName @product.ModelAuto.ModelName</h5>
+                            </a>
+                            
+                            <h5 class="card-title">@product.ColorAuto.ColorName</h5>
+                            <h5 class="card-title">Год: @product.Years</h5>
                             <p class="card-text">
-                                <em>
-                                    <strong>Цена:</strong>
-                                </em> @((product.Price).ToString("C0").Replace(",", " "))
+                                <em><strong>Цена:</strong></em>
+                                @if (product.Price == 0)
+                                {
+                                    <text>Надо уточнить</text>
+                                }
+                                else
+                                {
+                                    @($"{product.Price} KZT")
+                                }
                             </p>
-                            <p class="card-text">
-                                <em>
-                                    <strong>Дата добавления:</strong>
-                                </em> @product.Creation
-                            </p>
-                            <a asp-action="Details" asp-route-id="@product.Id" class="btn btn-primary btn-sm">Детально</a>
                         </div>
                     </div>
                 </div>

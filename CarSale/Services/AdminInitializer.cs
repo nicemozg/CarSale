@@ -9,7 +9,7 @@ public class AdminInitializer
     {
         string adminEmail = "nice.mozg@gmail.com";
         string adminUserName = "7064441111";
-        string password = "Legioner012788796!";
+        string password = "Legioner012788796";
         string adminPhoneNumber = "77064441111";
         bool confirmedPhoneNumber = true;
         bool confirmedEmail = true;

@@ -21,30 +21,39 @@ public class ProductsController : Controller
         _hostingEnvironment = hostingEnvironment;
     }
 
-   [HttpGet]
+    [HttpGet]
     public IActionResult Index()
     {
         List<Product> products = _db.Products
             .Include(p => p.Brand)
             .Include(p => p.Category)
+            .Include(p => p.ModelAuto)
+            .Include(p => p.ColorAuto)
             .ToList();
 
         List<Brand> brands = _db.Brands.ToList();
         ViewBag.Brands = brands;
+        List<ModelAuto> carModels = _db.ModelAutos.ToList();
+        ViewBag.Models = carModels;
+        List<TypeMotor> carMotors = _db.TypeAutosMototors.ToList();
+        ViewBag.Motors = carMotors;
         List<Category> categories = _db.Categories.ToList();
         ViewBag.Categories = categories;
 
         return View(products);
     }
-    
+
     
     //----Страничка Index--[HttpPost]-----------------------------------------------------------------------------------
     [HttpPost]
-    public IActionResult Index(int? category, int? brand)
+    public IActionResult Index(int? category, int? brand, int? model, int? motor)
     {
         List<Product> products = _db.Products
+            .Include(p=>p.Category)
             .Include(p => p.Brand)
-            .Include(p => p.Category)
+            .Include(p=>p.ModelAuto)
+            .Include(p=>p.TypeMotor)
+            .Include(p=>p.ColorAuto)
             .ToList();
 
         if (category.HasValue)
@@ -56,14 +65,28 @@ public class ProductsController : Controller
         {
             products = products.Where(p => p.Brand.Id == brand.Value).ToList();
         }
+        
+        if (model.HasValue)
+        {
+            products = products.Where(p => p.ModelAuto.Id == model.Value).ToList();
+        }
+        
+        if (motor.HasValue)
+        {
+            products = products.Where(p => p.TypeMotor.Id == motor.Value).ToList();
+        }
 
         if (products.Count == 0)
         {
-            ViewBag.FilterMessage = "Список товаров пуст";
+            ViewBag.FilterMessage = "Такой автомобиль не найден";
         }
 
         List<Brand> brands = _db.Brands.ToList();
         ViewBag.Brands = brands;
+        List<ModelAuto> carModels = _db.ModelAutos.ToList();
+        ViewBag.Models = carModels;
+        List<TypeMotor> carMotors = _db.TypeAutosMototors.ToList();
+        ViewBag.Motors = carMotors;
         List<Category> categories = _db.Categories.ToList();
         ViewBag.Categories = categories;
 
@@ -77,8 +100,16 @@ public class ProductsController : Controller
     {
         List<Brand> brands = _db.Brands.ToList();
         ViewBag.Brands = new SelectList(brands, nameof(Brand.Id), nameof(Brand.BrandName));
+        List<ModelAuto> models = _db.ModelAutos.ToList();
+        ViewBag.Models = new SelectList(models, nameof(ModelAuto.Id), nameof(ModelAuto.ModelName));
         List<Category> categories = _db.Categories.ToList();
         ViewBag.Categories = new SelectList(categories, nameof(Category.Id), nameof(Category.CategoryName));
+        List<TypeAuto> typeAutos = _db.TypeAutos.ToList();
+        ViewBag.TypesAuto = new SelectList(typeAutos, nameof(TypeAuto.Id), nameof(TypeAuto.TypeName));
+        List<TypeMotor> typeMotors = _db.TypeAutosMototors.ToList();
+        ViewBag.TypesMotor = new SelectList(typeMotors, nameof(TypeMotor.Id), nameof(TypeMotor.TypeName));
+        List<ColorAuto> colors = _db.ColorsAutos.ToList();
+        ViewBag.Colors = new SelectList(colors, nameof(ColorAuto.Id), nameof(ColorAuto.ColorName));
         return View();
     }
     
@@ -87,70 +118,169 @@ public class ProductsController : Controller
     [HttpPost]
     public IActionResult Add(Product product)
     {
-        if (product.AvatarFile != null && product.AvatarFile.Length > 0)
+        try
         {
             string uploadsFolder = Path.Combine(_hostingEnvironment.WebRootPath, "uploads");
-            if (!Directory.Exists(uploadsFolder))
+            if (product.AvatarFile != null && product.AvatarFile.Length > 0)
             {
-                Directory.CreateDirectory(uploadsFolder);
+                uploadsFolder = Path.Combine(_hostingEnvironment.WebRootPath, "uploads");
+                if (!Directory.Exists(uploadsFolder))
+                {
+                    Directory.CreateDirectory(uploadsFolder);
+                }
+
+                string uniqueFileName = Guid.NewGuid().ToString() + "_" + product.AvatarFile.FileName;
+                string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    product.AvatarFile.CopyTo(stream);
+                }
+
+                product.AvatarFileName = uniqueFileName;
+            }
+            else
+            {
+                product.AvatarFileName =
+                    "3ee29ee9-9bbc-4c13-86e9-1a763a10fce4_360_F_470299797_UD0eoVMMSUbHCcNJCdv2t8B2g1GVqYgs.jpg";
+            }
+            //----------------------------------------------------------------------------------------------------------
+            if (product.InfoFile != null && product.InfoFile.Length > 0)
+            {
+                uploadsFolder = Path.Combine(_hostingEnvironment.WebRootPath, "uploads");
+                if (!Directory.Exists(uploadsFolder))
+                {
+                    Directory.CreateDirectory(uploadsFolder);
+                }
+
+                string uniqueFileName = Guid.NewGuid().ToString() + "_" + product.InfoFile.FileName;
+                string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    product.InfoFile.CopyTo(stream);
+                }
+
+                product.InfoFileName = uniqueFileName;
+            }
+            else
+            {
+                product.InfoFileName =
+                    "3ee29ee9-9bbc-4c13-86e9-1a763a10fce4_360_F_470299797_UD0eoVMMSUbHCcNJCdv2t8B2g1GVqYgs.jpg";
+            }
+            //----------------------------------------------------------------------------------------------------------
+            
+            product.Creation = DateTime.Now;
+            if (product.SteeringWheel == "right")
+            {
+                product.SteeringWheel = "Справа";
+            }
+            else
+            {
+                product.SteeringWheel = "Слева";
             }
 
-            string uniqueFileName = Guid.NewGuid().ToString() + "_" + product.AvatarFile.FileName;
-            string filePath = Path.Combine(uploadsFolder, uniqueFileName);
-            using (var stream = new FileStream(filePath, FileMode.Create))
+            if (product.Transmission == "auto")
             {
-                product.AvatarFile.CopyTo(stream);
+                product.Transmission = "АКПП";
+            }
+            else if (product.Transmission == "robot")
+            {
+                product.Transmission = "Робот";
+            }
+            else
+            {
+                product.Transmission = "МКПП";
+            }
+            
+            // Добавляем продукт в базу данных
+            _db.Products.Add(product);
+            _db.SaveChanges();
+
+            // Теперь product.Id содержит уникальный идентификатор продукта
+
+            // Добавление фотографий в коллекцию Photos у продукта
+            foreach (var photoFile in product.PhotoFiles)
+            {
+                if (photoFile != null && photoFile.Length > 0)
+                {
+                    string uniqueFileName = Path.GetRandomFileName() + Path.GetExtension(photoFile.FileName);
+                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        photoFile.CopyTo(stream);
+                    }
+
+                    Photos photo = new Photos
+                    {
+                        PhotoPath = uniqueFileName,
+                        ProductId = product.Id
+                    };
+
+                    _db.Photos.Add(photo);
+                }
             }
 
-            product.AvatarFileName = uniqueFileName;
+            _db.SaveChanges(); // Сохраняем изменения в базе данных
+
+            return RedirectToAction("Index");
         }
-        else
+        catch (Exception ex)
         {
-            product.AvatarFileName =
-                "3ee29ee9-9bbc-4c13-86e9-1a763a10fce4_360_F_470299797_UD0eoVMMSUbHCcNJCdv2t8B2g1GVqYgs.jpg";
+            ModelState.AddModelError(string.Empty, $"Произошла ошибка при добавлении продукта: {ex.Message}");
+            return View(product);
         }
-
-        product.Creation = DateTime.Now;
-        product.ProductId = Guid.NewGuid();
-        _db.Products.Add(product);
-        _db.SaveChanges();
-        return RedirectToAction("Index");
     }
-    
 
+
+    
     //----Детальная страничка товара- [HttpGet]-------------------------------------------------------------------------
     [HttpGet]
     public IActionResult Details(int id)
     {
-        var product = _db.Products.Include(p => p.Brand).Include(p => p.Category)
+        var product = _db.Products
+            .Include(p => p.Brand)
+            .Include(p => p.ModelAuto)
+            .Include(p => p.Category)
+            .Include(p=>p.TypeAuto)
+            .Include(p=>p.TypeMotor)
+            .Include(p=>p.ColorAuto)
             .FirstOrDefault(p => p.Id == id);
+
         if (product is null)
         {
             return NotFound();
         }
+        
+        product.Photos = _db.Photos.Where(photo => photo.ProductId == id).ToList();
 
         return View(product);
     }
-    
 
+    
     //----Удаление товара- [HttpGet]------------------------------------------------------------------------------------
     [HttpGet]
     public IActionResult Delete(int id)
     {
-        var product = _db.Products.FirstOrDefault(p => p.Id == id);
+        var product = _db.Products
+            .FirstOrDefault(p => p.Id == id);
+
         if (product is null)
         {
             return NotFound();
         }
+
+        // Remove photos based on a condition (example: remove photos with a specific property)
+        var photosToRemove = _db.Photos.Where(photo => photo.ProductId == product.Id).ToList();
+        _db.Photos.RemoveRange(photosToRemove);
 
         _db.Products.Remove(product);
         _db.SaveChanges();
 
         return RedirectToAction("Index");
-        ;
     }
-    
 
+
+    
     //----Редактирования товара-[HttpGet]-------------------------------------------------------------------------------
     [HttpGet]
     public IActionResult Edit(int id)
@@ -221,7 +351,7 @@ public class ProductsController : Controller
         switch (state)
         {
             case SortState.NameDesc:
-                products = products.OrderByDescending(p => p.Name);
+                products = products.OrderByDescending(p => p.ModelAuto.ModelName);
                 break;
             case SortState.BrandAsc:
                 products = products.OrderBy(p => p.Brand.BrandName);
@@ -248,7 +378,7 @@ public class ProductsController : Controller
                 products = products.OrderByDescending(p => p.Price);
                 break;
             default:
-                products = products.OrderBy(p => p.Name);
+                products = products.OrderBy(p => p.ModelAuto.ModelName);
                 break;
         }
         return View(await products.AsNoTracking().ToListAsync());

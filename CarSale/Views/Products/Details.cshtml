@@ -1,22 +1,63 @@
+@using Microsoft.EntityFrameworkCore
 @model Product
 
 @{
     ViewBag.Title = "Details";
     Layout = "_Layout";
+    var isAdminOrSuperAdmin = User.IsInRole("superAdmin");
 }
 
+<img class="img-fluid" src="/uploads/@Model.InfoFileName"/>
 
 <div class="container">
-    <h2 class="mt-3">@Model.Name</h2>
-    <div class="text-center">
-        <img src="/uploads/@Model.AvatarFileName" class="img-fluid catAva" alt="картинка товара">
-    </div>
-    <table class="table table-bordered mt-3">
+    <h2 class="mt-3 text-center">@Model.Brand.BrandName @Model.ModelAuto.ModelName</h2>
+   <style>
+       .carousel-control-prev-icon, .carousel-control-next-icon {
+           background-color: black; /* Измените цвет фона на желаемый */
+           color: white; /* Измените цвет значков на желаемый */
+       }
+   
+       .carousel-control-prev, .carousel-control-next {
+           width: 5%; /* Измените ширину по вашему усмотрению */
+       }
+   </style>
+   
+  <div id="productCarousel" class="carousel slide" data-bs-ride="carousel">
+          <div class="carousel-inner">
+              @foreach (var photo in Model.Photos.Select((value, index) => new { value, index }))
+              {
+                  <div class="carousel-item @(photo.index == 0 ? "active" : "")">
+                      <img src="/uploads/@photo.value.PhotoPath" class="d-block mx-auto img-fluid w-100" 
+                           style="max-width: 550px; height: auto;" alt="Product Image">
+                  </div>
+              }
+          </div>
+          <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Previous</span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#productCarousel" data-bs-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Next</span>
+          </button>
+      </div>
+
+
+
+
+    <table class="table table-bordered mt-3 mx-auto" style="max-width: 550px">
         <tr>
-            <th>Название</th>
-            <td>@Model.Name</td>
+            <th>Марка</th>
+            <td>@Model.Brand.BrandName</td>
         </tr>
-        
+        <tr>
+            <th>Модель</th>
+            <td>@Model.ModelAuto.ModelName</td>
+        </tr>
+        <tr>
+            <th>Цвет</th>
+            <td>@Model.ColorAuto.ColorName</td>
+        </tr>
         <tr>
             @if (!string.IsNullOrEmpty(Model.Description))
             {
@@ -29,29 +70,33 @@
                 <td style="display: none;"></td>
             }
         </tr>
-        
+
         <tr>
             <th>Категория</th>
             <td>@Model.Category.CategoryName</td>
         </tr>
         <tr>
-            <th>Брэнд</th>
-            <td>@Model.Brand.BrandName</td>
+            <th>Тип кузова</th>
+            <td>@Model.TypeAuto.TypeName</td>
         </tr>
         <tr>
-            <th>Цена</th>
-            <td>@Model.Price тенге</td>
+            <th>Тип двигателя</th>
+            <td>@Model.TypeMotor.TypeName</td>
         </tr>
         <tr>
-            <th>Дата создания</th>
-            <td>@Model.Creation</td>
+            <th>Руль</th>
+            <td>@Model.SteeringWheel</td>
         </tr>
         <tr>
-            
-            @if (Model.Update != null && Model.Update != DateTime.MinValue)
+            <th>Трансмиссия</th>
+            <td>@Model.Transmission</td>
+        </tr>
+        <tr>
+        
+            @if (!string.IsNullOrEmpty(Model.Volume))
             {
-                <th>Дата обновления</th>
-                <td>@Model.Update</td>
+                <th>Объем</th>
+                <td>@Model.Volume</td>
             }
             else
             {
@@ -59,12 +104,75 @@
                 <td style="display: none;"></td>
             }
         </tr>
+
+        <tr>
+            <th>Год</th>
+            <td>@Model.Years</td>
+        </tr>
         
         <tr>
-            <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger btn-sm m-2">Удалить</a>
+            <th>Цена</th>
+            <td>@Model.Price тенге</td>
         </tr>
-        <tr>
-            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-success btn-sm m-2">Редактировать</a>
-        </tr>
+        @{
+            if (isAdminOrSuperAdmin)
+            {
+                <tr>
+                    <th>Дата создания</th>
+                    <td>@Model.Creation</td>
+                </tr>
+                <tr>
+        
+                    @if (Model.Update != null && Model.Update != DateTime.MinValue)
+                    {
+                        <th>Дата обновления</th>
+                        <td>@Model.Update</td>
+                    }
+                    else
+                    {
+                        <th style="display: none;"></th>
+                        <td style="display: none;"></td>
+                    }
+                </tr>
+                <tr>
+                    <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger btn-sm m-2">Удалить</a>
+                </tr>
+                <tr>
+                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-success btn-sm m-2">Редактировать</a>
+                </tr>
+            }
+        }
     </table>
 </div>
+
+@section scripts {
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Инициализация карусели
+            var productCarousel = new bootstrap.Carousel(document.getElementById('productCarousel'));
+
+            // Добавление поддержки свайпа
+            $("#productCarousel").on("touchstart", function(event) {
+                var xClick = event.originalEvent.touches[0].pageX;
+                $(this).one("touchmove", function(event) {
+                    var xMove = event.originalEvent.touches[0].pageX;
+                    if (Math.floor(xClick - xMove) > 5) {
+                        productCarousel.next();
+                    } else if (Math.floor(xClick - xMove) < -5) {
+                        productCarousel.prev();
+                    }
+                });
+            });
+
+            // Включение бургер-меню
+            $('#navbar-toggler').on('click', function () {
+                var target = $(this).data('target');
+                $(target).toggleClass('show');
+            });
+        });
+    </script>
+}
+
+
+

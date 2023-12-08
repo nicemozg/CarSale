@@ -1,0 +1,9 @@
+@model ModelAuto
+
+<div class="form-group mb-3">
+    <label for="ModelName" class="mb-2">Модель</label>
+    <input asp-for="ModelName" type="text" class="form-control" id="ModelName" placeholder="Введите название модели">
+    <div class="text-center">
+        <span asp-validation-for="ModelName" class="text-danger"></span>
+    </div>
+</div>
