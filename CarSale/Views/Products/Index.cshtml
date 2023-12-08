@@ -1,4 +1,4 @@
-@model List<Product>
+@model CarSale.ViewModels.PaginationThemeViewModel
 
 @{
     ViewBag.Title = "Список автомобилей";
@@ -22,50 +22,42 @@
             <form asp-controller="Products" asp-action="Index" method="post" class="text-center">
                 
                 <div class="form-group mr-2 search mx-auto mt-1">
-                    @* <label for="category" class="mr-2">Категория:</label> *@
                     <select id="category" name="category" class="form-control">
-                        <option value="">Категории</option>
+                        <option value="">Все категории</option>
                         @foreach (var category in ViewBag.Categories)
                         {
-                            <option value="@category.Id">@category.CategoryName</option>
+                            <option value="@category.Id" selected="@(category.Id == ViewBag.SelectedCategoryId ? "selected" : null)">
+                                @category.CategoryName
+                            </option>
                         }
                     </select>
                 </div>
                 
                 <div class="form-group mr-2 search mx-auto mt-1">
-                    @* <label for="brand" class="mr-2">Марка:</label> *@
                     <select id="brand" name="brand" class="form-control">
-                        <option value="">Марки</option>
+                        <option value="">Все марки</option>
                         @foreach (var brand in ViewBag.Brands)
                         {
-                            <option value="@brand.Id">@brand.BrandName</option>
+                            <option value="@brand.Id" selected="@(brand.Id == ViewBag.SelectedBrandId ? "selected" : null)">
+                                @brand.BrandName
+                            </option>
                         }
                     </select>
                 </div>
                 
-                @* <div class="form-group mr-2 search mx-auto mt-1"> *@
-                @*     $1$ <label for="model" class="mr-2">Модель:</label> #1# *@
-                @*     <select id="model" name="model" class="form-control"> *@
-                @*         <option value="">Модели</option> *@
-                @*         @foreach (var carModel in ViewBag.Models) *@
-                @*         { *@
-                @*             <option value="@carModel.Id">@carModel.ModelName</option> *@
-                @*         } *@
-                @*     </select> *@
-                @* </div> *@
-                
-                <div class="form-group mr-2 search mx-auto mt-1">
-                    @* <label for="motor" class="mr-2">Двигатель:</label> *@
-                    <select id="motor" name="motor" class="form-control">
-                        <option value="">Тип двигателя</option>
-                        @foreach (var carMotor in ViewBag.Motors)
-                        {
-                            <option value="@carMotor.Id">@carMotor.TypeName</option>
-                        }
-                    </select>
-                </div>
-                
-                
+               <div class="form-group mr-2 search mx-auto mt-1">
+                   <select id="motor" name="motor" class="form-control">
+                       <option value="">Все типы двигателя</option>
+                       @foreach (var carMotor in ViewBag.Motors)
+                       {
+                           <option value="@carMotor.Id" selected="@(carMotor.Id == ViewBag.SelectedMotorId)">
+                               @carMotor.TypeName
+                           </option>
+                       }
+                   </select>
+               </div>
+
+
                 
                 <div class="form-group">
                     <button type="submit" class="btn btn-primary m-3">Применить фильтр</button>
@@ -83,7 +75,7 @@
     else
     {
         <div class="row">
-            @foreach (var product in Model)
+            @foreach (var product in Model.Products)
             {
                 <div class="col-md-4">
                     <div class="card mb-4">
@@ -105,9 +97,10 @@
                                 }
                                 else
                                 {
-                                    @($"{product.Price} KZT")
+                                    @($"{product.Price:N0} KZT")
                                 }
                             </p>
+
                         </div>
                     </div>
                 </div>
@@ -115,3 +108,28 @@
         </div>
     }
 </div>
+
+<div class="text-center mt-2">
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+            @if (Model.TotalPages > 1)
+            {
+                <li class="page-item @(Model.CurrentPage == 1 ? "disabled" : "")">
+                    <a class="page-link" href="?page=1">Первая</a>
+                </li>
+
+                @for (int i = 1; i <= Model.TotalPages; i++)
+                {
+                    <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                        <a class="page-link" href="?page=@i">@i</a>
+                    </li>
+                }
+
+                <li class="page-item @(Model.CurrentPage == Model.TotalPages ? "disabled" : "")">
+                    <a class="page-link" href="?page=@Model.TotalPages">Последняя</a>
+                </li>
+            }
+        </ul>
+    </nav>
+</div>
+

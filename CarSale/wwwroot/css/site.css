@@ -36,3 +36,7 @@ body {
 .search{
   width: 200px;
 }
+
+a {
+  text-decoration: none;
+}

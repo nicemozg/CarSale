@@ -112,7 +112,7 @@
         
         <tr>
             <th>Цена</th>
-            <td>@Model.Price тенге</td>
+            <td>@($"{Model.Price:N0} KZT")</td>
         </tr>
         @{
             if (isAdminOrSuperAdmin)
@@ -135,10 +135,10 @@
                     }
                 </tr>
                 <tr>
-                    <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger btn-sm m-2">Удалить</a>
-                </tr>
-                <tr>
-                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-success btn-sm m-2">Редактировать</a>
+                    <div class="text-center mt-2">
+                        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-success btn-sm m-2">Редактировать</a>
+                        <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger btn-sm m-2">Удалить</a>
+                    </div>
                 </tr>
             }
         }

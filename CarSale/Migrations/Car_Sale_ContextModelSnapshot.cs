@@ -63,6 +63,30 @@ namespace CarSale.Migrations
                     b.ToTable("ColorsAutos");
                 });
 
+            modelBuilder.Entity("CarSale.Models.Filter", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("BrandId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("CategoryId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("CookieId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("MotorId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Filters");
+                });
+
             modelBuilder.Entity("CarSale.Models.ModelAuto", b =>
                 {
                     b.Property<int>("Id")
@@ -127,8 +151,8 @@ namespace CarSale.Migrations
                     b.Property<int>("ModelAutoId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("Price")
-                        .HasColumnType("INTEGER");
+                    b.Property<decimal?>("Price")
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("SteeringWheel")
                         .IsRequired()

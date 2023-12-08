@@ -31,7 +31,7 @@ public class Product
     public DateTime Creation { get; set; }
     public DateTime? Update { get; set; }
    
-    public int? Price { get; set; }
+    public decimal? Price { get; set; }
     [Range(1, int.MaxValue, ErrorMessage = "Брэнд не может быть пустым")]
     public int BrandId { get; set; }
     public Brand Brand { get; set; }
@@ -56,7 +56,7 @@ public class Product
     public ColorAuto ColorAuto { get; set; }
     
     [NotMapped] // Используйте атрибут NotMapped, чтобы EF Core игнорировал это свойство при создании схемы базы данных
-    public List<IFormFile> PhotoFiles { get; set; }
+    public List<IFormFile>? PhotoFiles { get; set; }
     [NotMapped]
     public List<Photos> Photos { get; set; } = new List<Photos>();
     

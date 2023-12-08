@@ -38,34 +38,25 @@
     <label for="description" class="mb-2">Описание товара</label>
     <textarea asp-for="Description" class="form-control" id="description" placeholder="Введите описание авто"></textarea>
     
-   <div class="d-flex">
+   <div class="d-flex mt-2">
        <select asp-for="SteeringWheel" class="form-control ml-2">
-           <option value="left">Слева</option>
-           <option value="right">Справа</option>
+           <option value="left">Руль слева</option>
+           <option value="right">Руль справа</option>
        </select>
    </div>
     <span asp-validation-for="SteeringWheel" class="text-danger"></span>
     
-     <div class="d-flex">
+     <div class="d-flex mt-2">
            <select asp-for="Transmission" class="form-control ml-2">
-               <option value="auto">АКПП</option>
-               <option value="robot">Робот</option>
-               <option value="mechanical">МКПП</option>
+               <option value="auto">Коробка АКПП</option>
+               <option value="robot">Коробка Робот</option>
+               <option value="mechanical">Коробка МКПП</option>
                
            </select>
        </div>
     <span asp-validation-for="Transmission" class="text-danger"></span>
     
-    @* <div class="d-flex"> *@
-    @*     <select asp-for="Motor" class="form-control ml-2"> *@
-    @*         <option value="fuel">Бензин</option> *@
-    @*         <option value="electro">Электро</option> *@
-    @*         <option value="hybrid">Гибрид</option> *@
-    @*     </select> *@
-    @* </div> *@
-    @* <span asp-validation-for="Transmission" class="text-danger"></span> *@
-    
-    <label for="volume" class="mb-2">Объем</label>
+    <label for="volume" class="mb-2">Объем двигателя</label>
             <input asp-for="Volume" type="text" class="form-control" id="volume" placeholder="Введите объем авто">
     <span asp-validation-for="Volume" class="text-danger"></span>
     
@@ -73,17 +64,17 @@
         <input asp-for="Years" type="text" class="form-control" id="years" placeholder="Введите год авто">
     <span asp-validation-for="Years" class="text-danger"></span>
     
-    <label for="price" class="mb-2">Цена товара</label>
+    <label for="price" class="mb-2">Цена автомобиля</label>
     <input asp-for="Price" type="text" class="form-control" id="price" placeholder="Введите цену авто">
     <span asp-validation-for="Price" class="text-danger"></span>
 
-    <label for="AvatarFile" class="mb-2">Основное изображение</label>
+    <label for="InfoFile" class="mb-2 mt-2">Изображение для загаловка</label>
+    <input asp-for="InfoFile" type="file" class="form-control-file" id="InfoFile">
+    
+    <label for="AvatarFile" class="mb-2 mt-2">Основное изображение</label>
         <input asp-for="AvatarFile" type="file" class="form-control-file" id="AvatarFile">
     
-    <label for="PhotoFiles" class="mb-2">Загрузить изображения</label>
+    <label for="PhotoFiles" class="mb-2 mt-2">Детальное изображения</label>
    <input asp-for="PhotoFiles" type="file" class="form-control-file" id="PhotoFiles" multiple>
     <span asp-validation-for="PhotoFiles" class="text-danger"></span>
-    
-    <label for="InfoFile" class="mb-2">Фото инфо</label>
-            <input asp-for="InfoFile" type="file" class="form-control-file" id="InfoFile">
 </div>
