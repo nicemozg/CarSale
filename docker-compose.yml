@@ -18,5 +18,5 @@ services:
   volumes:
    - ./nginx/conf:/etc/nginx/conf.d
    - ./nginx/http:/etc/http:ro
-   - ./nginx/ssl/interhouse.kz:/etc/ssl:ro
+   - ./nginx/ssl/gtlog.kz:/etc/ssl:ro
   restart: always
