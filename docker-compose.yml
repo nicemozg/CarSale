@@ -1,0 +1,22 @@
+version: '3.6'
+networks:
+ deplay-quide-dev:
+  driver: bridge
+services: 
+ app: 
+  container_name: CarSale
+  build:
+   context: .
+   dockerfile: Dockerfile
+  restart: always
+ nginx:
+  image: nginx:1.23.1-alpine
+  container_name: nginx
+  ports:
+   - "80:80"
+   - "443:443"
+  volumes:
+   - ./nginx/conf:/etc/nginx/conf.d
+   - ./nginx/http:/etc/http:ro
+   - ./nginx/ssl/interhouse.kz:/etc/ssl:ro
+  restart: always

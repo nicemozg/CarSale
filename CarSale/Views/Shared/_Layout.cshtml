@@ -13,7 +13,7 @@
 <header>
     <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
         <div class="container-fluid">
-            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">CarSale</a>
+            <a class="navbar-brand" asp-area="" asp-controller="Products" asp-action="Index">Global Trade Logistics</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                     aria-expanded="false" aria-label="Toggle navigation">
@@ -24,16 +24,18 @@
                 @if (User.Identity.IsAuthenticated)
                 {
                     <ul class="navbar-nav flex-grow-1">
+                        @* <li class="nav-item"> *@
+                        @*     <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a> *@
+                        @* </li> *@
+                        @* <li class="nav-item"> *@
+                        @*     <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a> *@
+                        @* </li> *@
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Products" asp-action="Index">Легковые Авто</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Products" asp-action="SpecialEquipment">Спец Техника</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Products" asp-action="Index">Авто</a>
-                        </li>
-
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Сategories" asp-action="Index">Категорий</a>
                         </li>
@@ -68,15 +70,27 @@
                 @if (!User.Identity.IsAuthenticated)
                 {
                     <ul class="navbar-nav flex-grow-1">
+                        @* <li class="nav-item"> *@
+                        @*     <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a> *@
+                        @* </li> *@
+                        @* <li class="nav-item"> *@
+                        @*     <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a> *@
+                        @* </li> *@
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="btn btn-outline-secondary btn-sm me-1 mt-2 navbar-btn" asp-area="" asp-controller="Products" asp-action="Index">
+                                <i class="fas fa-car"></i> <!-- Используем иконку легкового автомобиля -->
+                                Легковые Авто
+                            </a>
+                            <span class="badge badge-primary"></span>
                         </li>
+
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="btn btn-outline-secondary btn-sm me-1 mt-2 navbar-btn" asp-area="" asp-controller="Products" asp-action="SpecialEquipment">
+                                <i class="fas fa-truck"></i> <!-- Используем иконку грузового авто -->
+                                Спец техника
+                            </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Products" asp-action="Index">Авто</a>
-                        </li>
+
                         <li class="nav-item my-auto">
                             <a class="nav-link text-dark navbar-btn" asp-area="" asp-controller="Account" asp-action="Login">Вход</a>
                         </li>
@@ -94,7 +108,8 @@
 
 <footer class="border-top footer text-muted">
     <div class="container">
-        &copy; 2023 - CarSale - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        &copy; 2013 - Global Trade Logistics
+        @* <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a> *@
     </div>
 </footer>
 <script src="~/lib/jquery/dist/jquery.min.js"></script>

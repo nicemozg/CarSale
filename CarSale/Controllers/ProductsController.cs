@@ -26,7 +26,7 @@ public class ProductsController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> Index(int page = 1, int pageSize = 3)
+    public async Task<IActionResult> Index(int page = 1, int pageSize = 6)
     {
         List<Product> products = _db.Products
             .Include(p => p.Brand)
@@ -34,12 +34,12 @@ public class ProductsController : Controller
             .Include(p => p.ModelAuto)
             .Include(p => p.ColorAuto)
             .Include(p => p.TypeMotor)
-            .ToList();
+            .Where(p=>p.Category.Id == 1).ToList();
         var cookieId = GetOrCreateFilterCookieId(); // Реализуйте этот метод
-        var currentFilter = _db.Filters.FirstOrDefault(f => f.CookieId == cookieId);
+        var currentFilter = _db.FilterCars.FirstOrDefault(f => f.CookieId == cookieId);
         if (currentFilter == null)
         {
-            currentFilter = new Filter
+            currentFilter = new FilterCar
             {
                 CookieId = cookieId,
                 CategoryId = 0,
@@ -47,7 +47,7 @@ public class ProductsController : Controller
                 MotorId = 0
             };
         
-            _db.Filters.Add(currentFilter);
+            _db.FilterCars.Add(currentFilter);
             await _db.SaveChangesAsync();
         }
         else
@@ -78,8 +78,15 @@ public class ProductsController : Controller
         ViewBag.SelectedCategoryId = currentFilter.CategoryId;
         ViewBag.SelectedBrandId = currentFilter.BrandId;
         ViewBag.SelectedMotorId = currentFilter.MotorId;
-        List<Brand> brands = _db.Brands.ToList();
+        
+        var cars = _db.Products
+            .Where(p => p.CategoryId == 1)
+            .Include(p => p.Brand)
+            .ToList();
+
+        List<Brand> brands = cars.Select(p => p.Brand).ToList();
         ViewBag.Brands = brands;
+        
         List<ModelAuto> carModels = _db.ModelAutos.ToList();
         ViewBag.Models = carModels;
         List<TypeMotor> carMotors = _db.TypeAutosMototors.ToList();
@@ -105,14 +112,14 @@ public class ProductsController : Controller
 
     //----Страничка Index--[HttpPost]-----------------------------------------------------------------------------------
     [HttpPost]
-    public async Task<IActionResult> Index(int? category, int? brand, int? model, int? motor)
+    public async Task<IActionResult> Index(int? category, int? brand, int? motor)
     {
         var cookieId = GetOrCreateFilterCookieId(); // Реализуйте этот метод
-        var currentFilter = _db.Filters.FirstOrDefault(f => f.CookieId == cookieId);
+        var currentFilter = _db.FilterCars.FirstOrDefault(f => f.CookieId == cookieId);
     
         if (currentFilter == null)
         {
-            currentFilter = new Filter
+            currentFilter = new FilterCar
             {
                 CookieId = cookieId,
                 CategoryId = 0,
@@ -120,37 +127,155 @@ public class ProductsController : Controller
                 MotorId = 0
             };
         
-            _db.Filters.Add(currentFilter);
+            _db.FilterCars.Add(currentFilter);
         }
         
         currentFilter.CategoryId = category ?? 0;
         currentFilter.BrandId = brand ?? 0;
         currentFilter.MotorId = motor ?? 0;
-        _db.Filters.Update(currentFilter);
+        _db.FilterCars.Update(currentFilter);
         await _db.SaveChangesAsync();
         return RedirectToAction("Index");
     }
 
+    [HttpGet]
+    public async Task<IActionResult> SpecialEquipment(int page = 1, int pageSize = 6)
+    {
+        List<Product> products = _db.Products
+            .Include(p => p.Brand)
+            .Include(p => p.Category)
+            .Include(p => p.ModelAuto)
+            .Include(p => p.ColorAuto)
+            .Include(p => p.TypeMotor)
+            .Where(p=>p.Category.Id == 2).ToList();
+        var cookieId = GetOrCreateFilterCookieId(); // Реализуйте этот метод
+        var currentFilter = _db.FilterTrucks.FirstOrDefault(f => f.CookieId == cookieId);
+        if (currentFilter == null)
+        {
+            currentFilter = new FilterTruck()
+            {
+                CookieId = cookieId,
+                CategoryId = 0,
+                BrandId = 0,
+                MotorId = 0
+            };
+        
+            _db.FilterTrucks.Add(currentFilter);
+            await _db.SaveChangesAsync();
+        }
+        else
+        {
+            if (currentFilter.CategoryId > 0 || currentFilter.BrandId > 0 || currentFilter.MotorId > 0)
+            {
+                if (currentFilter.CategoryId > 0)
+                {
+                    products = products.Where(p => p.Category.Id == currentFilter.CategoryId).ToList();
+                }
+        
+                if (currentFilter.BrandId > 0)
+                {
+                    products = products.Where(p => p.Brand.Id == currentFilter.BrandId).ToList();
+                }
+        
+                if (currentFilter.MotorId > 0)
+                {
+                    products = products.Where(p => p.TypeMotor.Id == currentFilter.MotorId).ToList();
+                }
+        
+                if (products.Count == 0)
+                {
+                    ViewBag.FilterMessage = "Такой автомобиль не найден";
+                }
+            }
+        }
+        ViewBag.SelectedCategoryId = currentFilter.CategoryId;
+        ViewBag.SelectedBrandId = currentFilter.BrandId;
+        ViewBag.SelectedMotorId = currentFilter.MotorId;
+        //---------------------------------------------------
+        var cars = _db.Products
+            .Where(p => p.CategoryId == 2)
+            .Include(p => p.Brand)
+            .ToList(); // Материализация данных из базы данных
 
+        List<Brand> brands = cars.Select(p => p.Brand).ToList();
+        ViewBag.Brands = brands;
+
+        //---------------------------------------------------
+        List<ModelAuto> carModels = _db.ModelAutos.ToList();
+        ViewBag.Models = carModels;
+        List<TypeMotor> carMotors = _db.TypeAutosMototors.ToList();
+        ViewBag.Motors = carMotors;
+        List<Category> categories = _db.Categories.ToList();
+        ViewBag.Categories = categories;
+        
+        decimal usdExchangeRate = await GetUsdExchangeRateAsync();
+        foreach (var product in products)
+        {
+            product.Price *= usdExchangeRate;
+        }
+        var pagedThemes = products.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+        var paginationViewModel = new PaginationThemeViewModel
+        {
+            Products = pagedThemes,
+            TotalCount = products.Count,
+            CurrentPage = page,
+            PageSize = pageSize
+        };
+        return View(paginationViewModel);
+    }
+    
+    [HttpPost]
+    public async Task<IActionResult> SpecialEquipment(int? category, int? brand, int? motor)
+    {
+        var cookieId = GetOrCreateFilterCookieId(); // Реализуйте этот метод
+        var currentFilter = _db.FilterTrucks.FirstOrDefault(f => f.CookieId == cookieId);
+    
+        if (currentFilter == null)
+        {
+            currentFilter = new FilterTruck()
+            {
+                CookieId = cookieId,
+                CategoryId = 0,
+                BrandId = 0,
+                MotorId = 0
+            };
+        
+            _db.FilterTrucks.Add(currentFilter);
+        }
+        
+        currentFilter.CategoryId = category ?? 0;
+        currentFilter.BrandId = brand ?? 0;
+        currentFilter.MotorId = motor ?? 0;
+        _db.FilterTrucks.Update(currentFilter);
+        await _db.SaveChangesAsync();
+        return RedirectToAction("SpecialEquipment");
+    }
 
     //----Добавление товара-[HttpGet]----------------------------------------------------------------------------------
     [HttpGet]
     public IActionResult Add()
     {
-        List<Brand> brands = _db.Brands.ToList();
+        List<Brand> brands = _db.Brands.OrderBy(b => b.BrandName).ToList();
         ViewBag.Brands = new SelectList(brands, nameof(Brand.Id), nameof(Brand.BrandName));
-        List<ModelAuto> models = _db.ModelAutos.ToList();
+
+        List<ModelAuto> models = _db.ModelAutos.OrderBy(m => m.ModelName).ToList();
         ViewBag.Models = new SelectList(models, nameof(ModelAuto.Id), nameof(ModelAuto.ModelName));
-        List<Category> categories = _db.Categories.ToList();
+
+        List<Category> categories = _db.Categories.OrderBy(c => c.CategoryName).ToList();
         ViewBag.Categories = new SelectList(categories, nameof(Category.Id), nameof(Category.CategoryName));
-        List<TypeAuto> typeAutos = _db.TypeAutos.ToList();
+
+        List<TypeAuto> typeAutos = _db.TypeAutos.OrderBy(t => t.TypeName).ToList();
         ViewBag.TypesAuto = new SelectList(typeAutos, nameof(TypeAuto.Id), nameof(TypeAuto.TypeName));
-        List<TypeMotor> typeMotors = _db.TypeAutosMototors.ToList();
+
+        List<TypeMotor> typeMotors = _db.TypeAutosMototors.OrderBy(tm => tm.TypeName).ToList();
         ViewBag.TypesMotor = new SelectList(typeMotors, nameof(TypeMotor.Id), nameof(TypeMotor.TypeName));
-        List<ColorAuto> colors = _db.ColorsAutos.ToList();
+
+        List<ColorAuto> colors = _db.ColorsAutos.OrderBy(c => c.ColorName).ToList();
         ViewBag.Colors = new SelectList(colors, nameof(ColorAuto.Id), nameof(ColorAuto.ColorName));
+
         return View();
     }
+
 
 
     //----Добавление товара-[HttpPost]----------------------------------------------------------------------------------

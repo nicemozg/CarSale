@@ -3,6 +3,7 @@ using System;
 using CarSale.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CarSale.Migrations
 {
     [DbContext(typeof(Car_Sale_Context))]
-    partial class Car_Sale_ContextModelSnapshot : ModelSnapshot
+    [Migration("20231221185941_Add FilterTruck")]
+    partial class AddFilterTruck
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.14");

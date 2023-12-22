@@ -16,7 +16,9 @@ namespace CarSale.Context
         public DbSet<TypeMotor> TypeAutosMototors { get; set; }
         public DbSet<ModelAuto> ModelAutos { get; set; }
         public DbSet<ColorAuto> ColorsAutos { get; set; }
-        public DbSet<Filter> Filters { get; set; }
+        public DbSet<FilterCar> FilterCars { get; set; }
+        
+        public DbSet<FilterTruck> FilterTrucks { get; set; }
         
         public Car_Sale_Context(DbContextOptions<Car_Sale_Context> options) : base(options)
         {
